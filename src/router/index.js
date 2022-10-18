@@ -1,26 +1,51 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-
-Vue.use(VueRouter)
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Login from '../views/Login'//登录页面
+import Home from '../views/Home'//首页
+import UserCenter from '../views/Home/userCenter'//个人中心
+import Layout from '../views/Layout'//布局
+import NotFound from '../views/ErrorPage/404'//404
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/login',
+    name: 'login',
+    component: Login
   }
 ]
 
-const router = new VueRouter({
+//动态路由
+export const DynamicRoute = [
+  {
+    path:'/',
+    name: 'index',
+    component:Layout,
+    redirect:'/home',//重定向到首页
+    children:[
+      {
+        path:'home',
+        name:'home',
+        component:Home,
+        meta:{
+          menuName:"首页",
+          icon:"home-outlined"
+        }
+      }
+    ]
+  },
+  {//个人中心
+    path:'/userCenter',
+    name:'userCenter',
+    component:UserCenter
+  },
+  {//通配,处理404
+    path:'/:pathMatch(.*)*',
+    name:'NotFound',
+    component:NotFound
+  }
+]
+
+const router = createRouter({ //创建路由
+  history: createWebHashHistory(),
   routes
 })
 
